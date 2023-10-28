@@ -1,3 +1,4 @@
+<!-- App.svelte -->
 <script>
   let notes = [];
   let newNote = {
@@ -5,8 +6,8 @@
     x: 50,
     y: 50,
     header: 'Sticky Note',
-    text: 'Edit me!',
-    backgroundColor: 'yellow',
+    text: 'Your Notes!',
+    backgroundColor: '#D5CEA3',
     isDragging: false,
   };
 
@@ -23,9 +24,12 @@
   }
 
   function startDragging(index, event) {
-    notes[index].isDragging = true;
-    notes[index].dragStartX = event.clientX - notes[index].x;
-    notes[index].dragStartY = event.clientY - notes[index].y;
+    // Check if the left mouse button is pressed (button code 0)
+    if (event.buttons === 1) {
+      notes[index].isDragging = true;
+      notes[index].dragStartX = event.clientX - notes[index].x;
+      notes[index].dragStartY = event.clientY - notes[index].y;
+    }
   }
 
   function stopDragging(index) {
@@ -46,8 +50,8 @@
 </script>
 
 <main>
-  <h1>Welcome to Sticky Notes</h1>
-  <button on:click={addStickyNote}>Add Sticky Note</button>
+  <h1>Welcome to Sticky Notes 1.0 &#128515;</h1>
+  <button on:click={addStickyNote}>Add Your Note</button>
 
   {#each notes as note, index (note.id)}
     <div
@@ -58,7 +62,9 @@
       aria-grabbed="{note.isDragging}"
       tabindex="0"
     >
-      <div class="sticky-header" on:mousedown={event => startDragging(index, event)}>
+      <div class="sticky-header" on:mousedown={event => startDragging(index, event)} 
+      on:mouseup={() => stopDragging(index)}>
+      
         <input
           type="text"
           bind:value={note.header}
@@ -68,12 +74,19 @@
         />
       </div>
       <textarea bind:value={note.text}></textarea>
-      <input
-        type="color"
-        bind:value={note.backgroundColor}
-        class="color-picker"
-        on:input={() => changeNoteColor(index, note.backgroundColor)}
-      />
+     
+			<button on:click={() => {
+          const colorPicker = document.getElementById(`color-picker-${index}`);
+          colorPicker.click();
+        }} class="color-button">Note's Color</button>
+       <input
+          type="color"
+          bind:value={note.backgroundColor}
+          class="color-picker"
+          id={`color-picker-${index}`}
+          on:input={() => changeNoteColor(index, note.backgroundColor)}
+        /> 
+			     
       <button on:click={() => deleteNote(index)} class="delete-button">Delete</button>
     </div>
   {/each}
@@ -90,31 +103,44 @@
   }
 
   .sticky-header {
-    background-color: #ccc;
+    background-color: #445D48;
     padding: 8px;
     cursor: move;
+    display: flex;
+    justify-content: space-between;
   }
 
   .header-input {
     border: none;
-    background: none;
+    background: #445D48;
     font-size: 16px;
     font-family: Arial, sans-serif;
   }
 
+  .color-button {
+    background-color: #8B9A46;
+		position: absolute;
+		bottom: 10px;
+		left: 10px;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+	.color-picker {
+    display: none;
+  }
+
   textarea {
     width: calc(100% - 16px);
-    height: calc(100% - 56px); /* Leave space for header, adjustments, and buttons */
+    height: calc(100% - 56px); 
     border: none;
     background: none;
     resize: none;
     margin: 8px;
-  }
-
-  .color-picker {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
   }
 
   .delete-button {
