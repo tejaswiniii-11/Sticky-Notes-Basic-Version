@@ -93,7 +93,6 @@
 </main>
 
 <style>
-  /* CSS styles from your provided code */
   .custom-sticky-note {
     position: absolute;
     width: 250px;
@@ -137,7 +136,7 @@
 
   textarea {
     width: calc(100% - 16px);
-    height: calc(100% - 56px); /* Leave space for header, adjustments, and buttons */
+    height: calc(100% - 56px); 
     border: none;
     background: none;
     resize: none;
